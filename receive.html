@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Crypto - Cryptophase Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            min-height: 100vh;
+            color: #f0f8ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Crypto floating animation */
+        .crypto-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .crypto-float {
+            position: absolute;
+            color: rgba(52, 152, 219, 0.1);
+            font-size: 32px;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Banner */
+        .android-banner {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .android-banner:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* Card styles */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .back-btn {
+            color: #3498db;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Receive content */
+        .receive-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .receive-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #3498db;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 25px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .qr-code::before {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 8px;
+        }
+        
+        .qr-code::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 2px solid #0d1b2a;
+            border-radius: 10px;
+        }
+        
+        .address-container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .address-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #95a5a6;
+        }
+        
+        .address-value {
+            font-size: 14px;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            color: #3498db;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Network selector */
+        .network-selector {
+            margin-bottom: 25px;
+        }
+        
+        .network-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #95a5a6;
+        }
+        
+        .network-dropdown {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            color: #f0f8ff;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        /* Address list */
+        .address-list {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .address-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .address-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .address-item:last-child {
+            border-bottom: none;
+        }
+        
+        .address-item-title {
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: #3498db;
+        }
+        
+        .address-item-value {
+            font-size: 14px;
+            word-break: break-all;
+            color: #95a5a6;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .android-banner {
+                font-size: 16px;
+                padding: 12px;
+            }
+            
+            .qr-code {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background floating crypto elements -->
+    <div class="crypto-bg" id="cryptoBg"></div>
+    
+ 
+        
+        <div class="card">
+            <div class="section-header">
+                <h2 class="section-title">Receive</h2>
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="receive-content">
+                <div class="receive-title">Choose Address,Copy and Deposit Network fee</div>
+                <div class="qr-code"></div>
+                <div class="address-container">
+                    <div class="address-title">Address</div>
+                    <div class="address-value" id="btcAddress">13pp7wTdtBMV4JXqVw5PGfAaHU3RzKQjHK</div>
+                    <button class="copy-btn" onclick="copyAddress('btcAddress')">
+                        <i class="fas fa-copy"></i> Copy Address
+                    </button>
+                </div>
+            </div>
+            
+            <div class="network-selector">
+                <label class="network-label">Select Network</label>
+                <select class="network-dropdown" id="networkSelect">
+                    <option value="btc" selected>Bitcoin (BTC)</option>
+                    <option value="eth">Ethereum (ETH)</option>
+                    <option value="bsc">BNB Smart Chain (BSC)</option>
+                    <option value="trx">TRON (TRX)</option>
+                    <option value="usdt-trc20">USDT-TRC20</option>
+                    <option value="usdt-erc20">USDT-ERC20</option>
+                </select>
+            </div>
+            
+            <div class="address-list">
+                <div class="address-item" onclick="selectAddress('eth')">
+                    <div class="address-item-title">Your ETHEREUM address</div>
+                    <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('bsc')">
+                    <div class="address-item-title">Your BNB SMARTCHAIN address</div>
+                    <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('trx')">
+                    <div class="address-item-title">Your TRON address</div>
+                    <div class="address-item-value">TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj</div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('usdt-trc20')">
+                    <div class="address-item-title">Your USDT-TRC20 address</div>
+                    <div class="address-item-value">TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj</div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('usdt-erc20')">
+                    <div class="address-item-title">Your USDT-ERC20 address</div>
+                    <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Generate background crypto elements
+        function generateCryptoBackground() {
+            const bg = document.getElementById('cryptoBg');
+            const symbols = ['₿', 'Ξ', 'Ł', 'Ƀ', 'Ł', '¤', '₿', 'Ξ'];
+            
+            for (let i = 0; i < 20; i++) {
+                const crypto = document.createElement('div');
+                crypto.className = 'crypto-float';
+                crypto.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                crypto.style.left = Math.random() * 100 + 'vw';
+                crypto.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                crypto.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                crypto.style.animationDelay = Math.random() * 5 + 's';
+                bg.appendChild(crypto);
+            }
+        }
+        
+        // Copy address to clipboard
+        function copyAddress(elementId) {
+            const address = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(address)
+                .then(() => {
+                    alert('Address copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy address');
+                });
+        }
+        
+        // Select address from list
+        function selectAddress(network) {
+            const addresses = {
+                'btc': '13pp7wTdtBMV4JXqVw5PGfAaHU3RzKQjHK',
+                'eth': '0x9d51a16e1ca12399a959506eb8e07b327ef109f8',
+                'bsc': '0x9E6b5Dd347B389CA8E6F5F78D2B7bC8a1c3D4e5f',
+                'trx': 'TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj',
+                'usdt-trc20': 'TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj',
+                'usdt-erc20': '0x9d51a16e1ca12399a959506eb8e07b327ef109f8'
+            };
+            
+            const address = addresses[network];
+            document.getElementById('btcAddress').textContent = address;
+            document.getElementById('networkSelect').value = network;
+            alert(`Now showing ${network.toUpperCase()} address`);
+        }
+        
+        // Change network
+        document.getElementById('networkSelect').addEventListener('change', function() {
+            selectAddress(this.value);
+        });
+        
+        // Initialize the page
+        generateCryptoBackground();
+    </script>
+</body>
+</html>

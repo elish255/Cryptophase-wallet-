@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Cryptophase Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #f0f8ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .crypto-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .crypto-float {
+            position: absolute;
+            color: rgba(52, 152, 219, 0.1);
+            font-size: 32px;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent,
+                rgba(168, 85, 247, 0.4),
+                transparent 30%
+            );
+            animation: rotate 6s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .logo h1 {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-header h2 {
+            color: #3498db;
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e0e0ff;
+            font-size: 16px;
+        }
+        
+        .form-group label span {
+            color: #e74c3c;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group input {
+            flex: 1;
+        }
+        
+        .input-group button {
+            padding: 0 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            color: #3498db;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .input-group button:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            color: #f0f8ff;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        input::placeholder {
+            color: #95a5a6;
+            font-weight: 400;
+        }
+        
+        .btn {
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #9b59b6, #3498db);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.5);
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .kyc-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .kyc-info h3 {
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .kyc-status {
+            font-weight: 600;
+            color: #e74c3c;
+        }
+        
+        .verify-btn {
+            padding: 10px 20px;
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            border-radius: 8px;
+            color: #2ecc71;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .verify-btn:hover {
+            background: rgba(46, 204, 113, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .page-header h2 {
+                font-size: 22px;
+            }
+            
+            input, select {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background floating crypto elements -->
+    <div class="crypto-bg" id="cryptoBg"></div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                <h1>Cryptophase Wallet</h1>
+            </div>
+            
+            <div class="page-header">
+                <h2>Profile</h2>
+            </div>
+            
+            <!-- KYC Section -->
+            <div class="kyc-section">
+                <div class="kyc-info">
+                    <h3><i class="fas fa-shield-alt"></i> KYC Verified</h3>
+                    <div class="kyc-status">Not Verified</div>
+                </div>
+                <button class="verify-btn" onclick="verifyKYC()">
+                    <i class="fas fa-check-circle"></i> Verify
+                </button>
+            </div>
+            
+            <!-- User ID -->
+            <div class="form-group">
+                <label for="userId">User ID</label>
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="userId" 
+                        value="p0v05qhkHJbPhQ0haPvZZehuOo32"
+                        readonly
+                    >
+                    <button onclick="copyUserId()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                  
+                >
+            </div>
+            
+            <!-- Country -->
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select id="country">
+                    <option value="US" selected>United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="TZ">Tanzania</option>
+                    <option value="KE">Kenya</option>
+                    <option value="FR">France</option>
+                    <option value="JP">Japan</option>
+                    <option value="SG">Singapore</option>
+                    <option value="UG">Uganda</option>
+                    <option value="O">Other</option>
+                </select>
+            </div>
+            
+            <!-- Mobile Number -->
+            <div class="form-group">
+                <label for="mobile">Mobile number</label>
+                <input 
+                    type="tel" 
+                    id="mobile" 
+                    placeholder="Enter Your phone number"
+                >
+            </div>
+            
+            <button class="btn btn-primary" onclick="updateProfile()">
+                <i class="fas fa-save"></i> Update
+            </button>
+            
+            <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Generate background crypto elements
+        function generateCryptoBackground() {
+            const bg = document.getElementById('cryptoBg');
+            const symbols = ['₿', 'Ξ', 'Ł', 'Ƀ', 'Ł', '¤', '₿', 'Ξ'];
+            
+            for (let i = 0; i < 20; i++) {
+                const crypto = document.createElement('div');
+                crypto.className = 'crypto-float';
+                crypto.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                crypto.style.left = Math.random() * 100 + 'vw';
+                crypto.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                crypto.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                crypto.style.animationDelay = Math.random() * 5 + 's';
+                bg.appendChild(crypto);
+            }
+        }
+        
+        // Copy User ID to clipboard
+        function copyUserId() {
+            const userId = document.getElementById('userId');
+            userId.select();
+            document.execCommand('copy');
+            alert('User ID copied to clipboard!');
+        }
+        
+        // Verify KYC
+        function verifyKYC() {
+            alert('Redirecting to KYC verification process...');
+            // In a real app, this would redirect to a KYC verification flow
+        }
+        
+        // Update profile
+        function updateProfile() {
+            const country = document.getElementById('country').value;
+            const mobile = document.getElementById('mobile').value;
+            
+            if (mobile && !/^[0-9+-\s]{8,15}$/.test(mobile)) {
+                alert('Please enter a valid phone number');
+                return;
+            }
+            
+            alert('Profile updated successfully!');
+            // In a real app, this would save to the database
+        }
+        
+        // Initialize the page
+        generateCryptoBackground();
+    </script>
+</body>
+</html>

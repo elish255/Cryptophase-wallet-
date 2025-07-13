@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptophase Wallet - Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #f0f8ff;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 460px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .header h2 {
+            color: #3498db;
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            padding: 40px 35px;
+            width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e0e0ff;
+            font-size: 17px;
+        }
+        
+        .form-group label span {
+            color: #e74c3c;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 17px;
+            transition: all 0.3s;
+            color: #f0f8ff;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .form-group input::placeholder {
+            color: #95a5a6;
+            font-weight: 400;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 46px;
+            color: #3498db;
+            font-size: 20px;
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.5), transparent);
+            margin: 35px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #3498db;
+            border-radius: 50%;
+        }
+        
+        .signup-btn {
+            background: linear-gradient(135deg, #9b59b6, #3498db);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            letter-spacing: 0.8px;
+        }
+        
+        .signup-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.5);
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+        }
+        
+        .signin-link {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 17px;
+            color: #a0a0d0;
+        }
+        
+        .signin-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 8px;
+            transition: color 0.2s;
+        }
+        
+        .signin-link a:hover {
+            color: #9b59b6;
+            text-decoration: underline;
+        }
+        
+        .crypto-animation {
+            display: flex;
+            justify-content: center;
+            margin-top: 35px;
+            gap: 10px;
+        }
+        
+        .crypto-coin {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            font-size: 22px;
+            color: #3498db;
+            animation: float 4s ease-in-out infinite;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .crypto-coin:nth-child(1) {
+            animation-delay: 0s;
+            background: rgba(247, 147, 26, 0.1);
+            color: #f7931a;
+        }
+        
+        .crypto-coin:nth-child(2) {
+            animation-delay: 0.5s;
+            background: rgba(60, 60, 60, 0.1);
+            color: #3c3c3d;
+        }
+        
+        .crypto-coin:nth-child(3) {
+            animation-delay: 1s;
+            background: rgba(78, 53, 220, 0.1);
+            color: #4e35dc;
+        }
+        
+        .crypto-coin:nth-child(4) {
+            animation-delay: 1.5s;
+            background: rgba(0, 150, 136, 0.1);
+            color: #009688;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0%;
+            background: #e74c3c;
+            transition: width 0.3s;
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 25px;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header h2 {
+                font-size: 22px;
+            }
+            
+            .form-group input {
+                padding: 14px 16px 14px 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cryptophase Wallet</h1>
+            <h2>Sign Up</h2>
+        </div>
+        
+        <div class="card">
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="email">Email <span>*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="Your email"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password <span>*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Your password"
+                        required
+                    >
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strengthMeter"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm password <span>*</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        placeholder="Your password"
+                        required
+                    >
+                </div>
+                
+                <div class="divider"></div>
+                
+                <button type="submit" class="signup-btn">
+                    <i class="fas fa-user-plus"></i> Create account
+                </button>
+                
+                <div class="signin-link">
+                    Already have an account? <a href="#" id="signinLink">Sign in</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="crypto-animation">
+            <div class="crypto-coin">
+                <i class="fab fa-bitcoin"></i>
+            </div>
+            <div class="crypto-coin">
+                <i class="fab fa-ethereum"></i>
+            </div>
+            <div class="crypto-coin">
+                <i class="fab fa-btc"></i>
+            </div>
+            <div class="crypto-coin">
+                <i class="fas fa-coins"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSiJV8jaWK4rNNoBGFIA6JNACEDQJXbOY",
+            authDomain: "cryptophase-wallet.firebaseapp.com",
+            projectId: "cryptophase-wallet",
+            storageBucket: "cryptophase-wallet.appspot.com",
+            messagingSenderId: "1070932487803",
+            appId: "1:1070932487803:web:025cc748f3ebc16ec6bcde",
+            measurementId: "G-2VSNVW89V6"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Password strength indicator
+        const passwordInput = document.getElementById('password');
+        const strengthMeter = document.getElementById('strengthMeter');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength += 25;
+            if (password.length >= 12) strength += 15;
+            
+            // Character type checks
+            if (/[A-Z]/.test(password)) strength += 20;
+            if (/[a-z]/.test(password)) strength += 20;
+            if (/[0-9]/.test(password)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+            
+            // Update meter
+            strengthMeter.style.width = Math.min(strength, 100) + '%';
+            
+            // Update color
+            if (strength < 40) {
+                strengthMeter.style.backgroundColor = '#e74c3c';
+            } else if (strength < 70) {
+                strengthMeter.style.backgroundColor = '#f39c12';
+            } else {
+                strengthMeter.style.backgroundColor = '#2ecc71';
+            }
+        });
+        
+        // Handle form submission
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate password match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Validate password strength
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long!');
+                return;
+            }
+            
+            // Create user with Firebase
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed up
+                    const user = userCredential.user;
+                    
+                    // Store additional user data in Firestore
+                    db.collection("users").doc(user.uid).set({
+                        email: email,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        walletBalance: 0,
+                        portfolio: {}
+                    })
+                    .then(() => {
+                        alert('Account created successfully! Welcome to Cryptophase Wallet.');
+                        
+                        Redirect to dashboard or login page
+                        window.location.href = 'dashboard.html';
+                    })
+                    .catch((error) => {
+                        console.error("Error adding user data: ", error);
+                        alert('Account created, but could not save additional data. Please update your profile later.');
+                    });
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = error.message;
+                    
+                    // User-friendly error messages
+                    if (errorCode === 'auth/email-already-in-use') {
+                        errorMessage = 'This email is already associated with an account.';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'Please enter a valid email address.';
+                    } else if (errorCode === 'auth/weak-password') {
+                        errorMessage = 'Password should be at least 6 characters.';
+                    }
+                    
+                    alert(`Error: ${errorMessage}`);
+                });
+        });
+        
+        // Sign in link
+        document.getElementById('signinLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Redirecting to sign in page...');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

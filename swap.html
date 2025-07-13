@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swap Crypto - Cryptophase Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            min-height: 100vh;
+            color: #f0f8ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Crypto floating animation */
+        .crypto-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .crypto-float {
+            position: absolute;
+            color: rgba(52, 152, 219, 0.1);
+            font-size: 32px;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Banner */
+        .android-banner {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .android-banner:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* Card styles */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .back-btn {
+            color: #3498db;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Swap form */
+        .swap-form {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .swap-section {
+            margin-bottom: 20px;
+        }
+        
+        .swap-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #95a5a6;
+        }
+        
+        .swap-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 15px;
+        }
+        
+        .swap-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #f0f8ff;
+            font-size: 18px;
+            outline: none;
+        }
+        
+        .token-selector {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .token-name {
+            font-weight: 600;
+        }
+        
+        .swap-arrow {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 24px;
+            color: #3498db;
+        }
+        
+        /* Quote section */
+        .quote-section {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .quote-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+        
+        .quote-details {
+            margin-bottom: 15px;
+        }
+        
+        .quote-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .quote-label {
+            color: #95a5a6;
+        }
+        
+        .quote-value {
+            font-weight: 500;
+        }
+        
+        .fee-info {
+            font-size: 13px;
+            color: #95a5a6;
+            margin-top: 10px;
+        }
+        
+        /* Swap button */
+        .swap-btn {
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #9b59b6, #3498db);
+        }
+        
+        .swap-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.5);
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+        }
+        
+        .swap-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .android-banner {
+                font-size: 16px;
+                padding: 12px;
+            }
+            
+            .swap-input-group {
+                padding: 10px 12px;
+            }
+            
+            .swap-input {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background floating crypto elements -->
+    <div class="crypto-bg" id="cryptoBg"></div>
+    
+    <div class="container">
+        <div class="android-banner" onclick="alert('Redirecting to Play Store...')">
+            <i class="fab fa-android"></i> Install for Android
+        </div>
+        
+        <div class="card">
+            <div class="section-header">
+                <h2 class="section-title">Swap</h2>
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="swap-form">
+                <div class="swap-section">
+                    <div class="swap-label">From</div>
+                    <div class="swap-input-group">
+                        <input type="number" class="swap-input" id="fromAmount" placeholder="0.00" value="1" min="0">
+                        <div class="token-selector" onclick="selectToken('from')">
+                            <div class="token-icon">
+                                <i class="fab fa-btc" style="color: #f7931a;"></i>
+                            </div>
+                            <div class="token-name">BTC</div>
+                        </div>
+                    </div>
+                    <div class="balance-info">Balance: 0.00 BTC</div>
+                </div>
+                
+                <div class="swap-arrow">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                
+                <div class="swap-section">
+                    <div class="swap-label">To</div>
+                    <div class="swap-input-group">
+                        <input type="number" class="swap-input" id="toAmount" placeholder="0.00" value="0" min="0" readonly>
+                        <div class="token-selector" onclick="selectToken('to')">
+                            <div class="token-icon">
+                                <i class="fas fa-coins" style="color: #26a17b;"></i>
+                            </div>
+                            <div class="token-name">USDT</div>
+                        </div>
+                    </div>
+                    <div class="balance-info">Balance: $0.00 USDT</div>
+                </div>
+            </div>
+            
+            <div class="quote-section">
+                <div class="quote-title">Quote Rate</div>
+                <div class="quote-details">
+                    <div class="quote-row">
+                        <div class="quote-label">Estimated gas fee</div>
+                        <div class="quote-value">0.01700 ETH ($50.00)</div>
+                    </div>
+                    <div class="quote-row">
+                        <div class="quote-label">1 BTC =</div>
+                        <div class="quote-value">0.00000 USDT</div>
+                    </div>
+                    <div class="quote-row">
+                        <div class="quote-label">Max fee:</div>
+                        <div class="quote-value">$50.00</div>
+                    </div>
+                </div>
+                <div class="fee-info">
+                    Includes a 0.875% MetaMask fee – <a href="#" style="color: #3498db;">view all quotes</a>
+                </div>
+            </div>
+            
+            <button class="swap-btn" id="swapButton">
+                <i class="fas fa-exchange-alt"></i> Swap
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Generate background crypto elements
+        function generateCryptoBackground() {
+            const bg = document.getElementById('cryptoBg');
+            const symbols = ['₿', 'Ξ', 'Ł', 'Ƀ', 'Ł', '¤', '₿', 'Ξ'];
+            
+            for (let i = 0; i < 20; i++) {
+                const crypto = document.createElement('div');
+                crypto.className = 'crypto-float';
+                crypto.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                crypto.style.left = Math.random() * 100 + 'vw';
+                crypto.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                crypto.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                crypto.style.animationDelay = Math.random() * 5 + 's';
+                bg.appendChild(crypto);
+            }
+        }
+        
+        // Update quote when amount changes
+        document.getElementById('fromAmount').addEventListener('input', function() {
+            const btcAmount = parseFloat(this.value) || 0;
+            // Simulate conversion rate
+            const usdtAmount = btcAmount * 0.0001; // Placeholder rate
+            document.getElementById('toAmount').value = usdtAmount.toFixed(5);
+        });
+        
+        // Select token function
+        function selectToken(direction) {
+            alert(`Select ${direction} token`);
+            // In a real app, this would open a token selection modal
+        }
+        
+        // Swap button functionality
+        document.getElementById('swapButton').addEventListener('click', function() {
+            const fromAmount = document.getElementById('fromAmount').value;
+            const toAmount = document.getElementById('toAmount').value;
+            
+            if (fromAmount <= 0) {
+                alert('Please enter a valid amount to swap');
+                return;
+            }
+            
+            alert(`Swapping ${fromAmount} BTC for ${toAmount} USDT...`);
+            // In a real app, this would execute the swap transaction
+        });
+        
+        // Initialize the page
+        generateCryptoBackground();
+    </script>
+</body>
+</html>
