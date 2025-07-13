@@ -1,11 +1,13 @@
+[file name]: receive.html
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Crypto - Cryptophase Wallet</title>
+    <title>Receive Crypto - Cryptophase Wallet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -26,7 +28,7 @@
         .crypto-bg {
             position: absolute;
             top: 0;
-            left: 0;    
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
@@ -81,7 +83,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 20px;
         }
         
@@ -89,11 +91,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .section-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             background: linear-gradient(90deg, #3498db, #9b59b6);
             -webkit-background-clip: text;
@@ -105,159 +107,162 @@
             color: #3498db;
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
         }
         
-        /* Asset header */
-        .asset-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 25px;
+        /* Receive content */
+        .receive-content {
+            text-align: center;
+            padding: 20px 0;
         }
         
-        .asset-icon-large {
-            font-size: 32px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        .receive-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #3498db;
+        }
+        
+        .qr-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 25px;
+            background: #fff;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .asset-info-large {
-            flex: 1;
-        }
-        
-        .asset-name-large {
-            font-size: 22px;
-            font-weight: 700;
-        }
-        
-        .asset-balance-large {
-            font-size: 18px;
-            color: #95a5a6;
-            margin-top: 5px;
-        }
-        
-        /* Asset icons */
-        .btc-icon {
-            background: rgba(247, 147, 26, 0.15);
-            color: #f7931a;
-        }
-        
-        .eth-icon {
-            background: rgba(98, 126, 234, 0.15);
-            color: #627eea;
-        }
-        
-        .bnb-icon {
-            background: rgba(243, 186, 47, 0.15);
-            color: #f3ba2f;
-        }
-        
-        .trx-icon {
-            background: rgba(255, 6, 10, 0.15);
-            color: #ff060a;
-        }
-        
-        .usdt-icon {
-            background: rgba(38, 161, 123, 0.15);
-            color: #26a17b;
-        }
-        
-        /* Send form */
-        .send-form {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #95a5a6;
-            font-size: 17px;
-        }
-        
-        .amount-group {
             position: relative;
+            padding: 10px;
         }
         
-        .form-input {
-            width: 100%;
-            padding: 16px;
+        #mainQrCode {
+            width: 180px;
+            height: 180px;
+        }
+        
+        .address-container {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
-            color: #f0f8ff;
-            font-size: 18px;
+            padding: 15px;
+            margin-bottom: 25px;
+            position: relative;
         }
         
-        .form-input:focus {
-            outline: none;
-            border-color: #3498db;
+        .address-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #95a5a6;
         }
         
-        .max-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 6px 12px;
+        .address-value {
+            font-size: 14px;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
             background: rgba(52, 152, 219, 0.1);
             border: 1px solid rgba(52, 152, 219, 0.3);
             border-radius: 8px;
             color: #3498db;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
         
-        .conversion {
-            text-align: center;
-            font-size: 16px;
-            margin-top: 8px;
+        .copy-btn:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Network selector */
+        .network-selector {
+            margin-bottom: 25px;
+        }
+        
+        .network-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
             color: #95a5a6;
         }
         
-        .conversion-value {
-            color: #3498db;
-            font-weight: 600;
+        .network-dropdown {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            color: #f0f8ff;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
         
-        /* Continue button */
-        .continue-btn {
-            color: white;
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
+        /* Address list */
+        .address-list {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .address-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .address-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .address-item:last-child {
+            border-bottom: none;
+        }
+        
+        .address-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #9b59b6, #3498db);
-            margin-top: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
         }
         
-        .continue-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.5);
-            background: linear-gradient(135deg, #3498db, #9b59b6);
+        .address-content {
+            flex: 1;
+        }
+        
+        .address-item-title {
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 5px;
+            color: #3498db;
+        }
+        
+        .address-item-value {
+            font-size: 14px;
+            word-break: break-all;
+            color: #95a5a6;
+        }
+        
+        .address-qr {
+            font-size: 24px;
+            color: #3498db;
         }
         
         @media (max-width: 480px) {
@@ -270,27 +275,14 @@
                 padding: 12px;
             }
             
-            .card {
-                padding: 20px 15px;
+            .qr-container {
+                width: 180px;
+                height: 180px;
             }
             
-            .asset-icon-large {
-                font-size: 28px;
-                width: 45px;
-                height: 45px;
-            }
-            
-            .asset-name-large {
-                font-size: 20px;
-            }
-            
-            .asset-balance-large {
-                font-size: 16px;
-            }
-            
-            .form-input {
-                padding: 14px;
-                font-size: 16px;
+            #mainQrCode {
+                width: 160px;
+                height: 160px;
             }
         }
     </style>
@@ -306,43 +298,104 @@
         
         <div class="card">
             <div class="section-header">
-                <h2 class="section-title" id="pageTitle">Send</h2>
+                <h2 class="section-title">Receive</h2>
                 <button class="back-btn" onclick="window.history.back()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </div>
             
-            <div class="asset-header">
-                <div class="asset-icon-large" id="assetIcon">
-                    <i class="fab fa-btc"></i>
+            <div class="receive-content">
+                <div class="receive-title">Choose Address, Copy and Deposit Network fee</div>
+                <div class="qr-container">
+                    <div id="mainQrCode"></div>
                 </div>
-                <div class="asset-info-large">
-                    <div class="asset-name-large" id="assetName">Bitcoin</div>
-                    <div class="asset-balance-large" id="assetBalance">$0.00 available BTC</div>
+                <div class="address-container">
+                    <div class="address-title">Address</div>
+                    <div class="address-value" id="btcAddress">13pp7wTdtBMV4JXqVw5PGfAaHU3RzKQjHK</div>
+                    <button class="copy-btn" onclick="copyAddress('btcAddress')">
+                        <i class="fas fa-copy"></i> Copy Address
+                    </button>
                 </div>
             </div>
             
-            <div class="send-form">
-                <div class="form-group">
-                    <label class="form-label">Enter amount</label>
-                    <div class="amount-group">
-                        <input type="number" class="form-input" id="amountInput" placeholder="0.0000" value="0.0000">
-                        <button class="max-btn" id="maxBtn">Max</button>
+            <div class="network-selector">
+                <label class="network-label">Select Network</label>
+                <select class="network-dropdown" id="networkSelect">
+                    <option value="btc" selected>Bitcoin (BTC)</option>
+                    <option value="eth">Ethereum (ETH)</option>
+                    <option value="bsc">BNB Smart Chain (BSC)</option>
+                    <option value="trx">TRON (TRX)</option>
+                    <option value="usdt-trc20">USDT-TRC20</option>
+                    <option value="usdt-erc20">USDT-ERC20</option>
+                </select>
+            </div>
+            
+            <div class="address-list">
+                <div class="address-item" onclick="selectAddress('eth')">
+                    <div class="address-icon">
+                        <i class="fab fa-ethereum"></i>
                     </div>
-                    <div class="conversion">
-                        You will receive <span class="conversion-value" id="conversionValue">$0.00</span>
+                    <div class="address-content">
+                        <div class="address-item-title">Your ETHEREUM address</div>
+                        <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                    </div>
+                    <div class="address-qr" onclick="showQrForAddress('eth')">
+                        <i class="fas fa-qrcode"></i>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Receiver's address</label>
-                    <input type="text" class="form-input" id="addressInput" placeholder="Enter wallet address">
+                <div class="address-item" onclick="selectAddress('bsc')">
+                    <div class="address-icon">
+                        <i class="fab fa-bnb"></i>
+                    </div>
+                    <div class="address-content">
+                        <div class="address-item-title">Your BNB SMARTCHAIN address</div>
+                        <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                    </div>
+                    <div class="address-qr" onclick="showQrForAddress('bsc')">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('trx')">
+                    <div class="address-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="address-content">
+                        <div class="address-item-title">Your TRON address</div>
+                        <div class="address-item-value">TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj</div>
+                    </div>
+                    <div class="address-qr" onclick="showQrForAddress('trx')">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('usdt-trc20')">
+                    <div class="address-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="address-content">
+                        <div class="address-item-title">Your USDT-TRC20 address</div>
+                        <div class="address-item-value">TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj</div>
+                    </div>
+                    <div class="address-qr" onclick="showQrForAddress('usdt-trc20')">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+                
+                <div class="address-item" onclick="selectAddress('usdt-erc20')">
+                    <div class="address-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="address-content">
+                        <div class="address-item-title">Your USDT-ERC20 address</div>
+                        <div class="address-item-value">0x9d51a16e1ca12399a959506eb8e07b327ef109f8</div>
+                    </div>
+                    <div class="address-qr" onclick="showQrForAddress('usdt-erc20')">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
                 </div>
             </div>
-            
-            <button class="continue-btn" id="continueBtn">
-                Continue
-            </button>
         </div>
     </div>
     
@@ -364,126 +417,151 @@
             }
         }
         
-        // Asset data
-        const assets = {
-            btc: {
-                name: "Bitcoin",
-                symbol: "BTC",
-                icon: "fab fa-btc",
-                balance: 0,
-                usdBalance: 0,
-                iconClass: "btc-icon",
-                price: 117887.00
+        // Address data with icons
+        const addresses = {
+            'btc': {
+                address: '13pp7wTdtBMV4JXqVw5PGfAaHU3RzKQjHK',
+                icon: 'fab fa-btc',
+                color: '#f7931a',
+                name: 'Bitcoin'
             },
-            eth: {
-                name: "Ethereum",
-                symbol: "ETH",
-                icon: "fab fa-ethereum",
-                balance: 0,
-                usdBalance: 0,
-                iconClass: "eth-icon",
-                price: 2957.19
+            'eth': {
+                address: '0x9d51a16e1ca12399a959506eb8e07b327ef109f8',
+                icon: 'fab fa-ethereum',
+                color: '#627eea',
+                name: 'Ethereum'
             },
-            bnb: {
-                name: "BNB",
-                symbol: "BNB",
-                icon: "fab fa-bnb",
-                balance: 0,
-                usdBalance: 0,
-                iconClass: "bnb-icon",
-                price: 689.62
+            'bsc': {
+                address: '0x9d51a16e1ca12399a959506eb8e07b327ef109f8',
+                icon: 'fab fa-bnb',
+                color: '#f3ba2f',
+                name: 'BNB Smart Chain'
             },
-            trx: {
-                name: "TRON",
-                symbol: "TRX",
-                icon: "fas fa-bolt",
-                balance: 0,
-                usdBalance: 0,
-                iconClass: "trx-icon",
-                price: 0.30
+            'trx': {
+                address: 'TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj',
+                icon: 'fas fa-bolt',
+                color: '#ff060a',
+                name: 'TRON'
             },
-            usdt: {
-                name: "USDT TRC20",
-                symbol: "USDT",
-                icon: "fas fa-coins",
-                balance: 1000000,
-                usdBalance: 1000000,
-                iconClass: "usdt-icon",
-                price: 1.00
+            'usdt-trc20': {
+                address: 'TQLvBhvpcxQYqGU51nsZ7wXmPZi97gmpYj',
+                icon: 'fas fa-coins',
+                color: '#26a17b',
+                name: 'USDT-TRC20'
+            },
+            'usdt-erc20': {
+                address: '0x9d51a16e1ca12399a959506eb8e07b327ef109f8',
+                icon: 'fas fa-coins',
+                color: '#26a17b',
+                name: 'USDT-ERC20'
             }
         };
         
-        // Get asset from URL
-        function getAssetFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const assetParam = urlParams.get('asset');
-            return assetParam || 'btc';
+        // QR code instance
+        let qrCode = null;
+        
+        // Generate QR code
+        function generateQRCode(address, network) {
+            // Clear existing QR code
+            const container = document.getElementById('mainQrCode');
+            container.innerHTML = '';
+            
+            // Create new QR code
+            qrCode = new QRCode(container, {
+                text: address,
+                width: 180,
+                height: 180,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            // Set network icon in the center
+            const networkInfo = addresses[network];
+            if (networkInfo) {
+                const canvas = container.querySelector('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Draw icon in center
+                const iconSize = 30;
+                const centerX = canvas.width / 2 - iconSize / 2;
+                const centerY = canvas.height / 2 - iconSize / 2;
+                
+                // Draw background circle
+                ctx.fillStyle = networkInfo.color + '20'; // 20% opacity
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, canvas.height/2, iconSize + 5, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Create icon element
+                const icon = document.createElement('i');
+                icon.className = networkInfo.icon;
+                icon.style.fontSize = '30px';
+                icon.style.color = networkInfo.color;
+                icon.style.position = 'absolute';
+                icon.style.top = '50%';
+                icon.style.left = '50%';
+                icon.style.transform = 'translate(-50%, -50%)';
+                icon.style.zIndex = '10';
+                
+                container.appendChild(icon);
+            }
         }
         
-        // Load asset data
-        function loadAsset() {
-            const assetKey = getAssetFromURL();
-            const asset = assets[assetKey];
-            
-            if (!asset) return;
-            
-            // Update page title
-            document.getElementById('pageTitle').textContent = `Send ${asset.symbol}`;
-            
-            // Update asset header
-            document.getElementById('assetName').textContent = asset.name;
-            document.getElementById('assetBalance').textContent = 
-                `$${asset.usdBalance.toLocaleString()} available ${asset.symbol}`;
-            
-            // Update icon
-            const assetIcon = document.getElementById('assetIcon');
-            assetIcon.className = `asset-icon-large ${asset.iconClass}`;
-            assetIcon.innerHTML = `<i class="${asset.icon}"></i>`;
-            
-            // Update conversion rate
-            document.getElementById('amountInput').addEventListener('input', function() {
-                const amount = parseFloat(this.value) || 0;
-                const usdValue = amount * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
-            });
-            
-            // Set max button
-            document.getElementById('maxBtn').addEventListener('click', function() {
-                document.getElementById('amountInput').value = asset.balance.toFixed(4);
-                const usdValue = asset.balance * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
-            });
-            
-            // Continue button
-            document.getElementById('continueBtn').addEventListener('click', function() {
-                const amount = parseFloat(document.getElementById('amountInput').value) || 0;
-                const address = document.getElementById('addressInput').value;
-                
-                if (!address) {
-                    alert('Please enter a valid address');
-                    return;
-                }
-                
-                if (amount <= 0) {
-                    alert('Please enter a valid amount');
-                    return;
-                }
-                
-                if (amount > asset.balance) {
-                    alert(`Insufficient ${asset.symbol} balance`);
-                    return;
-                }
-                
-                alert(`Sending ${amount} ${asset.symbol} to ${address}`);
-                // In a real app, this would execute the transaction
-            });
+        // Copy address to clipboard
+        function copyAddress(elementId) {
+            const address = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(address)
+                .then(() => {
+                    alert('Address copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy address');
+                });
         }
+        
+        // Select address from list
+        function selectAddress(network) {
+            const addressData = addresses[network];
+            if (!addressData) return;
+            
+            // Update main address display
+            document.getElementById('btcAddress').textContent = addressData.address;
+            document.getElementById('networkSelect').value = network;
+            
+            // Update QR code
+            generateQRCode(addressData.address, network);
+        }
+        
+        // Show QR code for specific address
+        function showQrForAddress(network) {
+            const addressData = addresses[network];
+            if (!addressData) return;
+            
+            // Update main address display
+            document.getElementById('btcAddress').textContent = addressData.address;
+            document.getElementById('networkSelect').value = network;
+            
+            // Update QR code
+            generateQRCode(addressData.address, network);
+            
+            // Scroll to top to show the main QR code
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Change network
+        document.getElementById('networkSelect').addEventListener('change', function() {
+            selectAddress(this.value);
+        });
         
         // Initialize the page
         generateCryptoBackground();
-        loadAsset();
+        
+        // Generate initial QR code for Bitcoin
+        window.onload = function() {
+            generateQRCode(addresses.btc.address, 'btc');
+        };
     </script>
 </body>
 </html>
