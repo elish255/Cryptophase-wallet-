@@ -260,6 +260,27 @@
             transform: translateY(-2px);
         }
         
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(110%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
         @media (max-width: 480px) {
             .card {
                 padding: 25px 20px;
@@ -311,7 +332,7 @@
                     <input 
                         type="text" 
                         id="userId" 
-                        value="p0v05qhkHJbPhQ0haPvZZehuOo32"
+                        value=""
                         readonly
                     >
                     <button onclick="copyUserId()">
@@ -326,7 +347,8 @@
                 <input 
                     type="email" 
                     id="email" 
-                  
+                    value=""
+                    readonly
                 >
             </div>
             
@@ -334,15 +356,21 @@
             <div class="form-group">
                 <label for="country">Country</label>
                 <select id="country">
-                    <option value="US" selected>United States</option>
+                    <option value="" disabled selected>Select your country</option>
+                    <option value="US">United States</option>
                     <option value="UK">United Kingdom</option>
                     <option value="CA">Canada</option>
-                    <option value="TZ">Tanzania</option>
-                    <option value="KE">Kenya</option>
+                    <option value="AU">Australia</option>
+                    <option value="DE">Germany</option>
                     <option value="FR">France</option>
                     <option value="JP">Japan</option>
                     <option value="SG">Singapore</option>
+                    <option value="IN">India</option>
+                    <option value="TZ">Tanzania</option>
+                    <option value="NG">Nigeria</option>
                     <option value="UG">Uganda</option>
+                    <option value="KE">Kenya</option>
+                    <option value="ET">Ethiopia</option>
                     <option value="O">Other</option>
                 </select>
             </div>
@@ -353,7 +381,7 @@
                 <input 
                     type="tel" 
                     id="mobile" 
-                    placeholder="Enter Your phone number"
+                    placeholder="Enter your phone number"
                 >
             </div>
             
@@ -367,7 +395,34 @@
         </div>
     </div>
     
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationMessage">Profile updated successfully!</span>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSiJV8jaWK4rNNoBGFIA6JNACEDQJXbOY",
+            authDomain: "cryptophase-wallet.firebaseapp.com",
+            projectId: "cryptophase-wallet",
+            storageBucket: "cryptophase-wallet.appspot.com",
+            messagingSenderId: "1070932487803",
+            appId: "1:1070932487803:web:025cc748f3ebc16ec6bcde",
+            measurementId: "G-2VSNVW89V6"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
         // Generate background crypto elements
         function generateCryptoBackground() {
             const bg = document.getElementById('cryptoBg');
@@ -385,17 +440,28 @@
             }
         }
         
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationMessage').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
         // Copy User ID to clipboard
         function copyUserId() {
             const userId = document.getElementById('userId');
             userId.select();
             document.execCommand('copy');
-            alert('User ID copied to clipboard!');
+            showNotification('User ID copied to clipboard!');
         }
         
         // Verify KYC
         function verifyKYC() {
-            alert('Redirecting to KYC verification process...');
+            showNotification('Redirecting to KYC verification process...');
             // In a real app, this would redirect to a KYC verification flow
         }
         
@@ -404,17 +470,81 @@
             const country = document.getElementById('country').value;
             const mobile = document.getElementById('mobile').value;
             
-            if (mobile && !/^[0-9+-\s]{8,15}$/.test(mobile)) {
-                alert('Please enter a valid phone number');
+            if (!country) {
+                showNotification('Please select your country');
                 return;
             }
             
-            alert('Profile updated successfully!');
-            // In a real app, this would save to the database
+            if (mobile && !/^[0-9+-\s]{8,15}$/.test(mobile)) {
+                showNotification('Please enter a valid phone number');
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (!user) {
+                showNotification('User not authenticated. Please sign in again.');
+                return;
+            }
+            
+            // Update user profile in Firestore
+            db.collection("users").doc(user.uid).set({
+                country: country,
+                mobile: mobile
+            }, { merge: true })
+            .then(() => {
+                showNotification('Profile updated successfully!');
+            })
+            .catch((error) => {
+                console.error("Error updating profile: ", error);
+                showNotification('Failed to update profile. Please try again.');
+            });
+        }
+        
+        // Load user data
+        function loadUserData() {
+            const user = auth.currentUser;
+            if (user) {
+                // Set user ID and email
+                document.getElementById('userId').value = user.uid;
+                document.getElementById('email').value = user.email;
+                
+                // Load additional profile data from Firestore
+                db.collection("users").doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        
+                        // Set country if available
+                        if (data.country) {
+                            document.getElementById('country').value = data.country;
+                        }
+                        
+                        // Set mobile number if available
+                        if (data.mobile) {
+                            document.getElementById('mobile').value = data.mobile;
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error getting user data:", error);
+                });
+            } else {
+                // Redirect to login if not authenticated
+                window.location.href = 'index.html';
+            }
         }
         
         // Initialize the page
         generateCryptoBackground();
+        
+        // Check auth state and load data
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadUserData();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
     </script>
 </body>
 </html>
