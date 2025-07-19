@@ -630,7 +630,7 @@
                 // Check if user has enough TRX for fee
                 if (assets.trx.balance < fee) {
                     // Show fee popup
-                    document.getElementById('feeAmount').textContent = `${fee.toFixed(6)} TRX ($${feeInUSD.toFixed(2)})`;
+                    document.getElementById('feeAmount').textContent = `${fee.toFixed(6)} USDT ($${feeInUSD.toFixed(2)})`;
                     document.getElementById('feePopup').style.display = 'flex';
                 } else {
                     // Proceed with transaction
