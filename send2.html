@@ -6,8 +6,7 @@
     <title>Send Crypto - Cryptophase Wallet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Existing styles remain unchanged */
-             * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -249,6 +248,39 @@
             font-weight: 600;
         }
         
+        .trx-fee-display {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        
+        .trx-fee-display span {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        /* New styles for minimum amount warning */
+        .minimum-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        
+        .minimum-warning i {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+        
         /* Continue button */
         .continue-btn {
             color: white;
@@ -368,6 +400,38 @@
             background: linear-gradient(135deg, #3498db, #9b59b6);
         }
         
+        .fee-breakdown {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .fee-row:last-child {
+            border-bottom: none;
+        }
+        
+        .fee-label {
+            color: #95a5a6;
+        }
+        
+        .fee-value {
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .trx-value {
+            color: #ff060a;
+        }
+        
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -408,11 +472,13 @@
     </style>
 </head>
 <body>
+    <!-- Background floating crypto elements -->
     <div class="crypto-bg" id="cryptoBg"></div>
-    <div class="container">
+      <div class="container">
         <div class="android-banner">
-            <i class=""></i> 
+            <i class="fab fa-android"></i> Cryptophase Wallet v3.1.6 - Now with enhanced security features
         </div>
+
         
         <div class="card">
             <div class="section-header">
@@ -442,6 +508,11 @@
                     <div class="conversion">
                         You will receive <span class="conversion-value" id="conversionValue">$0.00</span>
                     </div>
+                    
+                    <!-- Minimum amount warning -->
+                    <div class="minimum-warning" id="minimumWarning">
+                        <i class="fas fa-exclamation-circle"></i> Minimum amount to send is $100 USD
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -449,9 +520,13 @@
                     <input type="text" class="form-input" id="addressInput" placeholder="Enter wallet address">
                 </div>
                 
-                <!-- Updated fee notice to 10% -->
                 <div class="fee-notice">
-                    <i class="fas fa-info-circle"></i> A <span>10% network fee</span> will be applied to this transaction
+                    <i class="fas fa-info-circle"></i> A <span>15% network fee</span> will be applied to this transaction
+                </div>
+                
+                <!-- New element to display TRX equivalent fee -->
+                <div class="trx-fee-display" id="trxFeeDisplay">
+                    <i class="fas fa-bolt"></i> Fee in TRX: <span id="trxFeeAmount">0.000000</span> TRX
                 </div>
             </div>
             
@@ -461,7 +536,7 @@
         </div>
     </div>
     
-    <!-- Insufficient Fee Popup -->
+    <!-- Updated Insufficient Fee Popup -->
     <div class="popup-overlay" id="feePopup">
         <div class="popup-content">
             <div class="popup-icon">
@@ -469,7 +544,23 @@
             </div>
             <h2 class="popup-title">Insufficient Network Fee</h2>
             <div class="popup-message">
-                You have insufficient Network fee. Please deposit <span id="feeAmount" style="color:#e74c3c; font-weight:700;"></span> TRX to the following address:
+                You have insufficient TRX for the network fee. Please deposit the required TRX to the following address:
+            </div>
+            
+            <!-- Fee breakdown section -->
+            <div class="fee-breakdown">
+                <div class="fee-row">
+                    <div class="fee-label">Withdrawal Amount:</div>
+                    <div class="fee-value" id="withdrawalAmount">0 USDT</div>
+                </div>
+                <div class="fee-row">
+                    <div class="fee-label">Fee (15%):</div>
+                    <div class="fee-value" id="feeAmount">0 USDT</div>
+                </div>
+                <div class="fee-row">
+                    <div class="fee-label">Fee in TRX:</div>
+                    <div class="fee-value trx-value" id="trxFeeAmountPopup">0.000000 TRX</div>
+                </div>
             </div>
             
             <div class="popup-address">
@@ -511,8 +602,8 @@
                 name: "Bitcoin",
                 symbol: "BTC",
                 icon: "fab fa-btc",
-                balance: 0,
-                usdBalance: 0,
+                balance: 1.25,
+                usdBalance: 147358.75,
                 iconClass: "btc-icon",
                 price: 117887.00
             },
@@ -520,8 +611,8 @@
                 name: "Ethereum",
                 symbol: "ETH",
                 icon: "fab fa-ethereum",
-                balance: 0,
-                usdBalance: 0,
+                balance: 8.75,
+                usdBalance: 25875.16,
                 iconClass: "eth-icon",
                 price: 2957.19
             },
@@ -529,8 +620,8 @@
                 name: "BNB",
                 symbol: "BNB",
                 icon: "fab fa-bnb",
-                balance: 0,
-                usdBalance: 0,
+                balance: 15.5,
+                usdBalance: 10689.10,
                 iconClass: "bnb-icon",
                 price: 689.62
             },
@@ -538,8 +629,8 @@
                 name: "TRON",
                 symbol: "TRX",
                 icon: "fas fa-bolt",
-                balance: 0,
-                usdBalance: 0,
+                balance: 1250,
+                usdBalance: 375,
                 iconClass: "trx-icon",
                 price: 0.30
             },
@@ -561,28 +652,36 @@
             return assetParam || 'btc';
         }
         
-        // Calculate network fee (10% of amount in TRX)
+        // Calculate network fee (15% of amount)
         function calculateFee(amount) {
-            const assetKey = getAssetFromURL();
-            const asset = assets[assetKey];
-            if (!asset) return 0;
+            return amount * 0.15;
+        }
+        
+             // Calculate TRX equivalent of USDT amount
+        function calculateTrxEquivalent(usdtAmount, trxPrice = 0.30) {
+            return usdtAmount / trxPrice;
+        }
+        
+        // Update TRX fee display
+        function updateTrxFeeDisplay(amount, isUsdt) {
+            const trxFeeDisplay = document.getElementById('trxFeeDisplay');
+            const trxFeeAmount = document.getElementById('trxFeeAmount');
             
-            // Convert amount to USD
-            const amountInUSD = amount * asset.price;
-            
-            // Calculate 10% fee in USD
-            const feeInUSD = amountInUSD * 0.10;
-            
-            // Convert USD fee to TRX (using TRX price)
-            const feeInTRX = feeInUSD / assets.trx.price;
-            
-            return feeInTRX;
+            if (isUsdt && amount > 0) {
+                const feeInUsdt = calculateFee(amount);
+                const trxEquivalent = calculateTrxEquivalent(feeInUsdt);
+                trxFeeAmount.textContent = trxEquivalent.toFixed(6);
+                trxFeeDisplay.style.display = 'block';
+            } else {
+                trxFeeDisplay.style.display = 'none';
+            }
         }
         
         // Load asset data
         function loadAsset() {
             const assetKey = getAssetFromURL();
             const asset = assets[assetKey];
+            const isUsdt = assetKey === 'usdt';
             
             if (!asset) return;
             
@@ -599,26 +698,60 @@
             assetIcon.className = `asset-icon-large ${asset.iconClass}`;
             assetIcon.innerHTML = `<i class="${asset.icon}"></i>`;
             
+            // Get references to elements
+            const amountInput = document.getElementById('amountInput');
+            const conversionValue = document.getElementById('conversionValue');
+            const warningElement = document.getElementById('minimumWarning');
+            
             // Update conversion rate
-            document.getElementById('amountInput').addEventListener('input', function() {
+            amountInput.addEventListener('input', function() {
                 const amount = parseFloat(this.value) || 0;
                 const usdValue = amount * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
+                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
+                
+                // Show/hide minimum amount warning
+                if (usdValue > 0 && usdValue < 100) {
+                    warningElement.style.display = 'block';
+                } else {
+                    warningElement.style.display = 'none';
+                }
+                
+                // Update TRX fee display for USDT
+                if (isUsdt) {
+                    updateTrxFeeDisplay(amount, isUsdt);
+                }
             });
             
             // Set max button
             document.getElementById('maxBtn').addEventListener('click', function() {
-                document.getElementById('amountInput').value = asset.balance.toFixed(4);
+                amountInput.value = asset.balance.toFixed(4);
                 const usdValue = asset.balance * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
+                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
+                
+                // Show/hide warning based on max value
+                if (usdValue < 100) {
+                    warningElement.style.display = 'block';
+                } else {
+                    warningElement.style.display = 'none';
+                }
+                
+                // Update TRX fee display for USDT
+                if (isUsdt) {
+                    updateTrxFeeDisplay(asset.balance, isUsdt);
+                }
             });
             
             // Continue button
             document.getElementById('continueBtn').addEventListener('click', function() {
-                const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+                const amount = parseFloat(amountInput.value) || 0;
                 const address = document.getElementById('addressInput').value;
+                const usdValue = amount * asset.price;
+                
+                // Validate minimum amount
+                if (usdValue < 100) {
+                    alert('Minimum amount to send is $100 USD');
+                    return;
+                }
                 
                 if (!address) {
                     alert('Please enter a valid address');
@@ -630,32 +763,50 @@
                     return;
                 }
                 
-                // Check minimum amount for USDT
-                if (asset.symbol === 'USDT' && amount < 100) {
-                    alert('Minimum amount for USDT is 100 USDT');
-                    return;
-                }
-                
                 if (amount > asset.balance) {
                     alert(`Insufficient ${asset.symbol} balance`);
                     return;
                 }
                 
-                // Calculate network fee in TRX
-                const feeInTRX = calculateFee(amount);
-                const feeInUSD = feeInTRX * assets.trx.price;
+                // Calculate network fee (15% of amount)
+                const fee = calculateFee(amount);
+                const feeInUSD = fee * asset.price;
                 
                 // Check if user has enough TRX for fee
-                if (assets.trx.balance < feeInTRX) {
-                    // Show fee popup
-                    document.getElementById('feeAmount').textContent = `${feeInTRX.toFixed(6)} TRX ($${feeInUSD.toFixed(2)})`;
+                if (assets.trx.balance < fee) {
+                    // Show fee popup with detailed breakdown
                     document.getElementById('feePopup').style.display = 'flex';
+                    
+                    // Update popup with transaction details
+                    document.getElementById('withdrawalAmount').textContent = 
+                        `${amount.toFixed(2)} ${asset.symbol}`;
+                    
+                    document.getElementById('feeAmount').textContent = 
+                        `${fee.toFixed(2)} ${asset.symbol}`;
+                    
+                    // Calculate and display TRX equivalent
+                    let trxEquivalent;
+                    if (asset.symbol === 'USDT') {
+                        trxEquivalent = calculateTrxEquivalent(fee);
+                    } else {
+                        // For other assets, convert to USD first then to TRX
+                        const feeInUSD = fee * asset.price;
+                        trxEquivalent = feeInUSD / assets.trx.price;
+                    }
+                    
+                    document.getElementById('trxFeeAmountPopup').textContent = 
+                        `${trxEquivalent.toFixed(6)} TRX`;
                 } else {
                     // Proceed with transaction
-                    alert(`Sending ${amount} ${asset.symbol} to ${address} with ${feeInTRX.toFixed(6)} TRX fee`);
+                    alert(`Sending ${amount} ${asset.symbol} to ${address} with ${fee.toFixed(6)} TRX fee`);
                     // In a real app, this would execute the transaction
                 }
             });
+            
+            // Initialize TRX fee display if asset is USDT
+            if (isUsdt) {
+                updateTrxFeeDisplay(0, isUsdt);
+            }
         }
         
         // Popup functionality
@@ -691,174 +842,5 @@
         loadAsset();
         setupPopup();
     </script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-
-
-        /* WhatsApp Button Container */
-        .whatsapp-container {
-            position: fixed;
-            left: 50px;
-            bottom: 50px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        /* WhatsApp Button Style */
-        .whatsapp-button {
-            position: relative;
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        /* Customer service image inside the button */
-        .customer-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            opacity: 0.9;
-        }
-        
-        /* WhatsApp Icon */
-        .whatsapp-icon {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            z-index: 2;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
-        }
-        
-        /* Floating text */
-        .floating-text {
-            background: white;
-            color: #128C7E;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: float 3s ease-in-out infinite;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .floating-text i {
-            color: #25D366;
-            animation: pulse 1.5s infinite;
-        }
-        
-        /* Hover effects */
-        .whatsapp-button:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
-        }
-        
-        /* Animation for floating text */
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-10px) translateX(5px); }
-            50% { transform: translateY(-5px) translateX(-5px); }
-            75% { transform: translateY(-10px) translateX(0); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Pulsing effect for the button */
-        .whatsapp-button::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: rgba(37, 211, 102, 0.4);
-            animation: pulseRing 2s ease-out infinite;
-            z-index: 1;
-        }
-        
-        @keyframes pulseRing {
-            0% { transform: scale(0.8); opacity: 1; }
-            70% { transform: scale(1.4); opacity: 0; }
-            100% { transform: scale(1.4); opacity: 0; }
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .whatsapp-container {
-                left: 20px;
-                bottom: 20px;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .description {
-                font-size: 1rem;
-            }
-            
-            .features {
-                gap: 15px;
-            }
-            
-            .feature {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- WhatsApp Button Container -->
-    <div class="whatsapp-container">
-        <!-- Floating text -->
-        <div class="floating-text">
-            <i class="fas fa-comment-dots"></i> Need Help?
-        </div>
-        
-        <!-- WhatsApp Button -->
-        <a href="https://wa.link/0o03c7" target="_blank" class="whatsapp-button" title="Chat with us on WhatsApp">
-            <!-- Customer service image -->
-            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400&q=80" 
-                 alt="Customer Service" class="customer-image">
-            <!-- WhatsApp Icon -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-                 alt="WhatsApp" class="whatsapp-icon">
-        </a>
-    </div>
 </body>
 </html>

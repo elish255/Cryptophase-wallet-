@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +7,7 @@
     <title>Send Crypto - Cryptophase Wallet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Existing styles remain unchanged */
-             * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -408,11 +408,13 @@
     </style>
 </head>
 <body>
+    <!-- Background floating crypto elements -->
     <div class="crypto-bg" id="cryptoBg"></div>
-    <div class="container">
+      <div class="container">
         <div class="android-banner">
             <i class=""></i> 
         </div>
+
         
         <div class="card">
             <div class="section-header">
@@ -449,9 +451,8 @@
                     <input type="text" class="form-input" id="addressInput" placeholder="Enter wallet address">
                 </div>
                 
-                <!-- Updated fee notice to 10% -->
                 <div class="fee-notice">
-                    <i class="fas fa-info-circle"></i> A <span>10% network fee</span> will be applied to this transaction
+                    <i class="fas fa-info-circle"></i> A <span>15% network fee</span> will be applied to this transaction
                 </div>
             </div>
             
@@ -561,22 +562,9 @@
             return assetParam || 'btc';
         }
         
-        // Calculate network fee (10% of amount in TRX)
+        // Calculate network fee (15% of amount)
         function calculateFee(amount) {
-            const assetKey = getAssetFromURL();
-            const asset = assets[assetKey];
-            if (!asset) return 0;
-            
-            // Convert amount to USD
-            const amountInUSD = amount * asset.price;
-            
-            // Calculate 10% fee in USD
-            const feeInUSD = amountInUSD * 0.10;
-            
-            // Convert USD fee to TRX (using TRX price)
-            const feeInTRX = feeInUSD / assets.trx.price;
-            
-            return feeInTRX;
+            return amount * 0.15;
         }
         
         // Load asset data
@@ -630,29 +618,23 @@
                     return;
                 }
                 
-                // Check minimum amount for USDT
-                if (asset.symbol === 'USDT' && amount < 100) {
-                    alert('Minimum amount for USDT is 100 USDT');
-                    return;
-                }
-                
                 if (amount > asset.balance) {
                     alert(`Insufficient ${asset.symbol} balance`);
                     return;
                 }
                 
-                // Calculate network fee in TRX
-                const feeInTRX = calculateFee(amount);
-                const feeInUSD = feeInTRX * assets.trx.price;
+                // Calculate network fee (15% of amount)
+                const fee = calculateFee(amount);
+                const feeInUSD = fee * asset.price;
                 
                 // Check if user has enough TRX for fee
-                if (assets.trx.balance < feeInTRX) {
+                if (assets.trx.balance < fee) {
                     // Show fee popup
-                    document.getElementById('feeAmount').textContent = `${feeInTRX.toFixed(6)} TRX ($${feeInUSD.toFixed(2)})`;
+                    document.getElementById('feeAmount').textContent = `${fee.toFixed(6)} USDT ($${feeInUSD.toFixed(2)})`;
                     document.getElementById('feePopup').style.display = 'flex';
                 } else {
                     // Proceed with transaction
-                    alert(`Sending ${amount} ${asset.symbol} to ${address} with ${feeInTRX.toFixed(6)} TRX fee`);
+                    alert(`Sending ${amount} ${asset.symbol} to ${address} with ${fee.toFixed(6)} TRX fee`);
                     // In a real app, this would execute the transaction
                 }
             });
@@ -693,6 +675,7 @@
     </script>
 </body>
 </html>
+
 
 <!DOCTYPE html>
 <html lang="en">

